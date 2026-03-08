@@ -13,11 +13,11 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import me.matheesha.fanbotai.R
 import me.matheesha.fanbotai.data.local.SettingsRepository
+import me.matheesha.fanbotai.data.network.ApiClient
 import me.matheesha.fanbotai.databinding.FragmentLoginBinding
 import me.matheesha.fanbotai.ui.UiState
 
 class LoginFragment : Fragment() {
-
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
 
@@ -37,14 +37,10 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val settings = SettingsRepository.getInstance(requireContext())
-
-        // Restore saved settings
         binding.etServerUrl.setText(settings.getServerUrl())
         binding.etApiKey.setText(settings.getApiKey())
 
-        // Navigate away if already logged in and server is configured
         if (settings.isLoggedIn() && settings.getServerUrl().isNotEmpty()) {
             findNavController().navigate(R.id.action_loginFragment_to_dashboardFragment)
             return
@@ -57,56 +53,30 @@ class LoginFragment : Fragment() {
             val password  = binding.etPassword.text.toString().trim()
             val totp      = binding.etTotp.text.toString().trim().ifEmpty { null }
 
-            if (serverUrl.isEmpty()) {
-                Snackbar.make(view, "Server URL is required", Snackbar.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            if (username.isEmpty() || password.isEmpty()) {
-                Snackbar.make(view, "Username and password are required", Snackbar.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
+            if (serverUrl.isEmpty()) { Snackbar.make(view, "Server URL is required", Snackbar.LENGTH_SHORT).show(); return@setOnClickListener }
+            if (username.isEmpty() || password.isEmpty()) { Snackbar.make(view, "Username and password are required", Snackbar.LENGTH_SHORT).show(); return@setOnClickListener }
 
             settings.setServerUrl(serverUrl)
             settings.setApiKey(apiKey)
-            me.matheesha.fanbotai.data.network.ApiClient.invalidate()
-
+            ApiClient.invalidate()
             viewModel.login(username, password, totp)
         }
 
         viewModel.needsTotp.observe(viewLifecycleOwner) { needs ->
             binding.tilTotp.isVisible = needs
-            if (needs) {
-                Snackbar.make(view, "Enter your 2FA code", Snackbar.LENGTH_SHORT).show()
-            }
+            if (needs) Snackbar.make(view, "Enter your 2FA code", Snackbar.LENGTH_SHORT).show()
         }
 
         viewModel.loginState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is UiState.Loading -> {
-                    binding.btnLogin.isEnabled = false
-                    binding.progressBar.isVisible = true
-                }
-                is UiState.Success -> {
-                    binding.btnLogin.isEnabled = true
-                    binding.progressBar.isVisible = false
-                    findNavController().navigate(R.id.action_loginFragment_to_dashboardFragment)
-                }
-                is UiState.Error -> {
-                    binding.btnLogin.isEnabled = true
-                    binding.progressBar.isVisible = false
-                    Snackbar.make(view, state.message, Snackbar.LENGTH_LONG).show()
-                }
-                else -> {
-                    binding.btnLogin.isEnabled = true
-                    binding.progressBar.isVisible = false
-                }
+                is UiState.Loading -> { binding.btnLogin.isEnabled = false; binding.progressBar.isVisible = true }
+                is UiState.Success -> { binding.btnLogin.isEnabled = true; binding.progressBar.isVisible = false; findNavController().navigate(R.id.action_loginFragment_to_dashboardFragment) }
+                is UiState.Error   -> { binding.btnLogin.isEnabled = true; binding.progressBar.isVisible = false; Snackbar.make(view, state.message, Snackbar.LENGTH_LONG).show() }
+                else               -> { binding.btnLogin.isEnabled = true; binding.progressBar.isVisible = false }
             }
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+    override fun onDestroyView() { super.onDestroyView(); _binding = null }
 }
 

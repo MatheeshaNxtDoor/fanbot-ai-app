@@ -19,7 +19,6 @@ import me.matheesha.fanbotai.databinding.FragmentAnalyticsBinding
 import me.matheesha.fanbotai.ui.UiState
 
 class AnalyticsFragment : Fragment() {
-
     private var _binding: FragmentAnalyticsBinding? = null
     private val binding get() = _binding!!
 
@@ -39,11 +38,8 @@ class AnalyticsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupCharts()
-
         binding.swipeRefresh.setOnRefreshListener { viewModel.load() }
-
         viewModel.analytics.observe(viewLifecycleOwner) { state ->
             binding.swipeRefresh.isRefreshing = state is UiState.Loading
             when (state) {
@@ -52,112 +48,60 @@ class AnalyticsFragment : Fragment() {
                 else -> {}
             }
         }
-
         viewModel.load()
     }
 
     private fun setupCharts() {
         val textColor = Color.parseColor("#B0B8D0")
+        val gridColor = Color.parseColor("#222540")
 
-        fun styleLineChart(chart: com.github.mikephil.charting.charts.LineChart) {
-            chart.apply {
-                description.isEnabled = false
-                legend.isEnabled = false
-                setTouchEnabled(true)
-                isDragEnabled = true
-                setScaleEnabled(true)
-                setBackgroundColor(Color.TRANSPARENT)
-                xAxis.apply {
-                    position = XAxis.XAxisPosition.BOTTOM
-                    textColor = textColor
-                    gridColor = Color.parseColor("#222540")
-                    setDrawGridLines(true)
-                    granularity = 1f
-                }
-                axisLeft.apply {
-                    textColor = textColor
-                    gridColor = Color.parseColor("#222540")
-                }
-                axisRight.isEnabled = false
-            }
+        binding.chartDaily.apply {
+            description.isEnabled = false; legend.isEnabled = false
+            setBackgroundColor(Color.TRANSPARENT)
+            xAxis.apply { position = XAxis.XAxisPosition.BOTTOM; this.textColor = textColor; this.gridColor = gridColor; granularity = 1f }
+            axisLeft.apply { this.textColor = textColor; this.gridColor = gridColor }
+            axisRight.isEnabled = false
         }
-
-        fun styleBarChart(chart: com.github.mikephil.charting.charts.BarChart) {
-            chart.apply {
-                description.isEnabled = false
-                legend.isEnabled = false
-                setTouchEnabled(true)
-                setBackgroundColor(Color.TRANSPARENT)
-                xAxis.apply {
-                    position = XAxis.XAxisPosition.BOTTOM
-                    textColor = textColor
-                    gridColor = Color.parseColor("#222540")
-                    granularity = 1f
-                    labelRotationAngle = -45f
-                }
-                axisLeft.apply {
-                    textColor = textColor
-                    gridColor = Color.parseColor("#222540")
-                }
-                axisRight.isEnabled = false
-            }
+        binding.chartHourly.apply {
+            description.isEnabled = false; legend.isEnabled = false
+            setBackgroundColor(Color.TRANSPARENT)
+            xAxis.apply { position = XAxis.XAxisPosition.BOTTOM; this.textColor = textColor; this.gridColor = gridColor; granularity = 1f; labelRotationAngle = -45f }
+            axisLeft.apply { this.textColor = textColor; this.gridColor = gridColor }
+            axisRight.isEnabled = false
         }
-
-        styleLineChart(binding.chartDaily)
-        styleBarChart(binding.chartHourly)
     }
 
     private fun bindData(data: Analytics) {
-        val accentColor = Color.parseColor("#a855f7")
+        val accent = Color.parseColor("#a855f7")
+        binding.tvTotalMessages.text = data.summary.totalMessages.toString()
+        binding.tvTotalReplies.text  = data.summary.totalReplies.toString()
+        binding.tvTotalUsers.text    = data.summary.totalUsers.toString()
+        binding.tvAvgPerDay.text     = data.summary.avgPerDay.toString()
+        binding.tvTopUser.text       = "${data.summary.topUser} (${data.summary.topUserCount})"
+        binding.tvPeakHour.text      = data.summary.peakHour
+        binding.tvResponseRate.text  = "${data.summary.responseRate}%"
+        binding.tvNewToday.text      = data.summary.newToday.toString()
 
-        // Summary
-        binding.tvTotalMessages.text  = data.summary.totalMessages.toString()
-        binding.tvTotalReplies.text   = data.summary.totalReplies.toString()
-        binding.tvTotalUsers.text     = data.summary.totalUsers.toString()
-        binding.tvAvgPerDay.text      = data.summary.avgPerDay.toString()
-        binding.tvTopUser.text        = "${data.summary.topUser} (${data.summary.topUserCount})"
-        binding.tvPeakHour.text       = data.summary.peakHour
-        binding.tvResponseRate.text   = "${data.summary.responseRate}%"
-        binding.tvNewToday.text       = data.summary.newToday.toString()
-
-        // Daily chart
         val dailyEntries = data.dailyValues.mapIndexed { i, v -> Entry(i.toFloat(), v.toFloat()) }
-        val dailyDataSet = LineDataSet(dailyEntries, "Messages").apply {
-            color = accentColor
-            setCircleColor(accentColor)
-            lineWidth = 2f
-            circleRadius = 4f
-            setDrawFilled(true)
-            fillColor = accentColor
-            fillAlpha = 30
+        val dailySet = LineDataSet(dailyEntries, "Messages").apply {
+            color = accent; setCircleColor(accent); lineWidth = 2f; circleRadius = 4f
+            setDrawFilled(true); fillColor = accent; fillAlpha = 30
             mode = LineDataSet.Mode.CUBIC_BEZIER
             valueTextColor = Color.parseColor("#B0B8D0")
         }
         binding.chartDaily.xAxis.valueFormatter = IndexAxisValueFormatter(data.dailyLabels.toTypedArray())
-        binding.chartDaily.data = LineData(dailyDataSet)
+        binding.chartDaily.data = LineData(dailySet)
         binding.chartDaily.invalidate()
 
-        // Hourly chart
         val hourlyEntries = data.hourlyValues.mapIndexed { i, v -> BarEntry(i.toFloat(), v.toFloat()) }
-        val hourlyDataSet = BarDataSet(hourlyEntries, "Hourly").apply {
-            color = Color.parseColor("#ec4899")
-            valueTextColor = Color.parseColor("#B0B8D0")
-        }
-        binding.chartHourly.xAxis.valueFormatter = IndexAxisValueFormatter(
-            Array(24) { i -> "%02d".format(i) }
-        )
-        binding.chartHourly.data = BarData(hourlyDataSet)
+        val hourlySet = BarDataSet(hourlyEntries, "Hourly").apply { color = Color.parseColor("#ec4899"); valueTextColor = Color.parseColor("#B0B8D0") }
+        binding.chartHourly.xAxis.valueFormatter = IndexAxisValueFormatter(Array(24) { i -> "%02d".format(i) })
+        binding.chartHourly.data = BarData(hourlySet)
         binding.chartHourly.invalidate()
 
-        // Top chatters
-        binding.tvTopChatters.text = data.topChatters.joinToString("\n") {
-            "• ${it.name}: ${it.count}"
-        }
+        binding.tvTopChatters.text = data.topChatters.joinToString("\n") { "• ${it.name}: ${it.count}" }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+    override fun onDestroyView() { super.onDestroyView(); _binding = null }
 }
 

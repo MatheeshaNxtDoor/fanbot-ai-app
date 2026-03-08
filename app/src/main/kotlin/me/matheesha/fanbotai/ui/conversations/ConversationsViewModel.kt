@@ -12,7 +12,6 @@ import me.matheesha.fanbotai.data.repository.Result
 import me.matheesha.fanbotai.ui.UiState
 
 class ConversationsViewModel(settings: SettingsRepository) : ViewModel() {
-
     private val repo = ConversationRepository(settings)
 
     private val _conversations = MutableLiveData<UiState<List<Conversation>>>(UiState.Idle)
@@ -29,12 +28,7 @@ class ConversationsViewModel(settings: SettingsRepository) : ViewModel() {
     }
 
     fun toggleMute(userId: Long) {
-        viewModelScope.launch {
-            when (repo.toggleMute(userId)) {
-                is Result.Success -> load()
-                else -> {}
-            }
-        }
+        viewModelScope.launch { if (repo.toggleMute(userId) is Result.Success) load() }
     }
 }
 

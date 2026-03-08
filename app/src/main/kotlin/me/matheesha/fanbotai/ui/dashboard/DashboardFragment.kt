@@ -19,7 +19,6 @@ import me.matheesha.fanbotai.databinding.FragmentDashboardBinding
 import me.matheesha.fanbotai.ui.UiState
 
 class DashboardFragment : Fragment() {
-
     private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
 
@@ -42,40 +41,30 @@ class DashboardFragment : Fragment() {
 
         binding.toolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.action_settings -> {
-                    findNavController().navigate(R.id.action_dashboardFragment_to_settingsFragment)
-                    true
-                }
-                R.id.action_users -> {
-                    findNavController().navigate(R.id.action_dashboardFragment_to_usersFragment)
-                    true
-                }
+                R.id.action_settings -> { findNavController().navigate(R.id.action_dashboardFragment_to_settingsFragment); true }
+                R.id.action_users    -> { findNavController().navigate(R.id.action_dashboardFragment_to_usersFragment); true }
                 else -> false
             }
         }
 
-        binding.btnStart.setOnClickListener { viewModel.startBot() }
-        binding.btnStop.setOnClickListener { viewModel.stopBot() }
+        binding.btnStart.setOnClickListener   { viewModel.startBot() }
+        binding.btnStop.setOnClickListener    { viewModel.stopBot() }
         binding.btnRestart.setOnClickListener { viewModel.restartBot() }
-
         binding.swipeRefresh.setOnRefreshListener { viewModel.loadStatus() }
 
         viewModel.status.observe(viewLifecycleOwner) { state ->
             binding.swipeRefresh.isRefreshing = state is UiState.Loading
             when (state) {
                 is UiState.Success -> bindStatus(state.data)
-                is UiState.Error -> Snackbar.make(view, state.message, Snackbar.LENGTH_LONG).show()
+                is UiState.Error   -> Snackbar.make(view, state.message, Snackbar.LENGTH_LONG).show()
                 else -> {}
             }
         }
 
         viewModel.action.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is UiState.Success -> {
-                    Snackbar.make(view, state.data.message, Snackbar.LENGTH_SHORT).show()
-                    viewModel.loadStatus()
-                }
-                is UiState.Error -> Snackbar.make(view, state.message, Snackbar.LENGTH_LONG).show()
+                is UiState.Success -> { Snackbar.make(view, state.data.message, Snackbar.LENGTH_SHORT).show(); viewModel.loadStatus() }
+                is UiState.Error   -> Snackbar.make(view, state.message, Snackbar.LENGTH_LONG).show()
                 else -> {}
             }
         }
@@ -84,31 +73,24 @@ class DashboardFragment : Fragment() {
     }
 
     private fun bindStatus(s: BotStatus) {
-        val color = if (s.botRunning)
-            ContextCompat.getColor(requireContext(), R.color.status_online)
-        else
-            ContextCompat.getColor(requireContext(), R.color.status_offline)
-
+        val color = if (s.botRunning) ContextCompat.getColor(requireContext(), R.color.status_online)
+                    else ContextCompat.getColor(requireContext(), R.color.status_offline)
         binding.tvBotStatus.text = if (s.botRunning) "● Running" else "● Stopped"
         binding.tvBotStatus.setTextColor(color)
-        binding.tvWindowState.text = s.windowState.replace('_', ' ').replaceFirstChar { it.uppercase() }
-        binding.tvWindowNext.text  = if (s.windowNext.isNotEmpty()) "Next: ${s.windowNext}" else ""
+        binding.tvWindowState.text  = s.windowState.replace('_', ' ').replaceFirstChar { it.uppercase() }
+        binding.tvWindowNext.text   = if (s.windowNext.isNotEmpty()) "Next: ${s.windowNext}" else ""
         binding.tvWindowNext.isVisible = s.windowNext.isNotEmpty()
         binding.tvForceInactive.isVisible = s.forceInactive
-        binding.statMessages.text  = s.totalMessages.toString()
-        binding.statReplies.text   = s.totalReplies.toString()
-        binding.statUsers.text     = s.totalUsers.toString()
-        binding.statToday.text     = s.messagesToday.toString()
-        binding.tvTimezone.text    = s.timezone
-
+        binding.statMessages.text   = s.totalMessages.toString()
+        binding.statReplies.text    = s.totalReplies.toString()
+        binding.statUsers.text      = s.totalUsers.toString()
+        binding.statToday.text      = s.messagesToday.toString()
+        binding.tvTimezone.text     = s.timezone
         binding.btnStart.isEnabled   = !s.botRunning
         binding.btnStop.isEnabled    = s.botRunning
         binding.btnRestart.isEnabled = s.botRunning
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+    override fun onDestroyView() { super.onDestroyView(); _binding = null }
 }
 

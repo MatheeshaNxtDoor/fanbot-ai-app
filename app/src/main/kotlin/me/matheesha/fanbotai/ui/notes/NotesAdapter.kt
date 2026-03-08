@@ -18,7 +18,7 @@ class NotesAdapter(
             b.tvTitle.text   = note.title.ifEmpty { "Untitled" }
             b.tvContent.text = note.content
             b.tvDate.text    = "${note.date} ${note.time}".trim()
-            b.btnEdit.setOnClickListener { onEdit(note) }
+            b.btnEdit.setOnClickListener   { onEdit(note) }
             b.btnDelete.setOnClickListener { onDelete(note) }
         }
     }
@@ -30,8 +30,8 @@ class NotesAdapter(
 
     companion object {
         val DIFF = object : DiffUtil.ItemCallback<Note>() {
-            override fun areItemsTheSame(a: Note, b: Note) = a.id == b.id
-            override fun areContentsTheSame(a: Note, b: Note) = a == b
+            override fun areItemsTheSame(oldItem: Note, newItem: Note) = oldItem.id == newItem.id
+            override fun areContentsTheSame(oldItem: Note, newItem: Note) = oldItem == newItem
         }
     }
 }

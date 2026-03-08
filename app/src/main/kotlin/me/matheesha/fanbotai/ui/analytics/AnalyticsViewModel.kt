@@ -12,7 +12,6 @@ import me.matheesha.fanbotai.data.repository.Result
 import me.matheesha.fanbotai.ui.UiState
 
 class AnalyticsViewModel(settings: SettingsRepository) : ViewModel() {
-
     private val repo = AnalyticsRepository(settings)
 
     private val _analytics = MutableLiveData<UiState<Analytics>>(UiState.Idle)

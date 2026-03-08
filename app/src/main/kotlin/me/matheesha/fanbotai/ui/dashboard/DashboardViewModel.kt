@@ -13,7 +13,6 @@ import me.matheesha.fanbotai.data.repository.Result
 import me.matheesha.fanbotai.ui.UiState
 
 class DashboardViewModel(settings: SettingsRepository) : ViewModel() {
-
     private val repo = BotRepository(settings)
 
     private val _status = MutableLiveData<UiState<BotStatus>>(UiState.Idle)
@@ -32,8 +31,8 @@ class DashboardViewModel(settings: SettingsRepository) : ViewModel() {
         }
     }
 
-    fun startBot() = doAction { repo.start() }
-    fun stopBot()  = doAction { repo.stop() }
+    fun startBot()   = doAction { repo.start() }
+    fun stopBot()    = doAction { repo.stop() }
     fun restartBot() = doAction { repo.restart() }
 
     private fun doAction(call: suspend () -> Result<BotActionResponse>) {

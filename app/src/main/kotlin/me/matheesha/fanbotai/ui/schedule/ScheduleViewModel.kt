@@ -12,7 +12,6 @@ import me.matheesha.fanbotai.data.repository.ScheduleRepository
 import me.matheesha.fanbotai.ui.UiState
 
 class ScheduleViewModel(settings: SettingsRepository) : ViewModel() {
-
     private val repo = ScheduleRepository(settings)
 
     private val _schedule = MutableLiveData<UiState<TodaySchedule>>(UiState.Idle)
@@ -28,18 +27,7 @@ class ScheduleViewModel(settings: SettingsRepository) : ViewModel() {
         }
     }
 
-    fun addBreak(date: String, start: String, end: String) {
-        viewModelScope.launch {
-            repo.addBreak(date, start, end)
-            load()
-        }
-    }
-
-    fun deleteBreak(date: String, idx: Int) {
-        viewModelScope.launch {
-            repo.deleteBreak(date, idx)
-            load()
-        }
-    }
+    fun addBreak(date: String, start: String, end: String) { viewModelScope.launch { repo.addBreak(date, start, end); load() } }
+    fun deleteBreak(date: String, idx: Int) { viewModelScope.launch { repo.deleteBreak(date, idx); load() } }
 }
 

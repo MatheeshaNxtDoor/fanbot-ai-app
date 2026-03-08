@@ -30,8 +30,8 @@ class UsersAdapter(
 
     companion object {
         val DIFF = object : DiffUtil.ItemCallback<DashboardUser>() {
-            override fun areItemsTheSame(a: DashboardUser, b: DashboardUser) = a.id == b.id
-            override fun areContentsTheSame(a: DashboardUser, b: DashboardUser) = a == b
+            override fun areItemsTheSame(oldItem: DashboardUser, newItem: DashboardUser) = oldItem.id == newItem.id
+            override fun areContentsTheSame(oldItem: DashboardUser, newItem: DashboardUser) = oldItem == newItem
         }
     }
 }

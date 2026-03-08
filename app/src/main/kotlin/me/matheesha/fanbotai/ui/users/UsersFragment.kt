@@ -18,7 +18,6 @@ import me.matheesha.fanbotai.databinding.FragmentUsersBinding
 import me.matheesha.fanbotai.ui.UiState
 
 class UsersFragment : Fragment() {
-
     private var _binding: FragmentUsersBinding? = null
     private val binding get() = _binding!!
 
@@ -40,25 +39,16 @@ class UsersFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding.toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
-
-        adapter = UsersAdapter(
-            onDelete = { user ->
-                MaterialAlertDialogBuilder(requireContext())
-                    .setTitle("Delete user")
-                    .setMessage("Delete user \"${user.username}\"?")
-                    .setPositiveButton("Delete") { _, _ -> viewModel.deleteUser(user.id) }
-                    .setNegativeButton("Cancel", null)
-                    .show()
-            }
-        )
-
+        adapter = UsersAdapter { user ->
+            MaterialAlertDialogBuilder(requireContext()).setTitle("Delete user")
+                .setMessage("Delete \"${user.username}\"?")
+                .setPositiveButton("Delete") { _, _ -> viewModel.deleteUser(user.id) }
+                .setNegativeButton("Cancel", null).show()
+        }
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
-
         binding.swipeRefresh.setOnRefreshListener { viewModel.load() }
-
         viewModel.users.observe(viewLifecycleOwner) { state ->
             binding.swipeRefresh.isRefreshing = state is UiState.Loading
             when (state) {
@@ -67,13 +57,9 @@ class UsersFragment : Fragment() {
                 else -> {}
             }
         }
-
         viewModel.load()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+    override fun onDestroyView() { super.onDestroyView(); _binding = null }
 }
 

@@ -15,7 +15,6 @@ import me.matheesha.fanbotai.databinding.FragmentConversationsBinding
 import me.matheesha.fanbotai.ui.UiState
 
 class ConversationsFragment : Fragment() {
-
     private var _binding: FragmentConversationsBinding? = null
     private val binding get() = _binding!!
 
@@ -37,31 +36,21 @@ class ConversationsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         adapter = ConversationsAdapter { convo -> viewModel.toggleMute(convo.userId) }
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
-
         binding.swipeRefresh.setOnRefreshListener { viewModel.load() }
-
         viewModel.conversations.observe(viewLifecycleOwner) { state ->
             binding.swipeRefresh.isRefreshing = state is UiState.Loading
             when (state) {
-                is UiState.Success -> {
-                    adapter.submitList(state.data)
-                    binding.tvEmpty.visibility = if (state.data.isEmpty()) View.VISIBLE else View.GONE
-                }
-                is UiState.Error -> Snackbar.make(view, state.message, Snackbar.LENGTH_LONG).show()
+                is UiState.Success -> { adapter.submitList(state.data); binding.tvEmpty.visibility = if (state.data.isEmpty()) View.VISIBLE else View.GONE }
+                is UiState.Error   -> Snackbar.make(view, state.message, Snackbar.LENGTH_LONG).show()
                 else -> {}
             }
         }
-
         viewModel.load()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+    override fun onDestroyView() { super.onDestroyView(); _binding = null }
 }
 

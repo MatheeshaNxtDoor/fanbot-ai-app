@@ -12,7 +12,6 @@ import me.matheesha.fanbotai.data.repository.Result
 import me.matheesha.fanbotai.ui.UiState
 
 class NotesViewModel(settings: SettingsRepository) : ViewModel() {
-
     private val repo = NotesRepository(settings)
 
     private val _notes = MutableLiveData<UiState<List<Note>>>(UiState.Idle)
@@ -35,14 +34,8 @@ class NotesViewModel(settings: SettingsRepository) : ViewModel() {
         _saveState.value = UiState.Loading
         viewModelScope.launch {
             when (val r = repo.createNote(date, time, title, content)) {
-                is Result.Success -> {
-                    _saveState.value = if (r.data.ok && r.data.note != null)
-                        UiState.Success(r.data.note)
-                    else
-                        UiState.Error("Failed to create note")
-                    load()
-                }
-                is Result.Error -> _saveState.value = UiState.Error(r.message)
+                is Result.Success -> { _saveState.value = if (r.data.ok && r.data.note != null) UiState.Success(r.data.note) else UiState.Error("Failed"); load() }
+                is Result.Error   -> _saveState.value = UiState.Error(r.message)
             }
         }
     }
@@ -51,25 +44,13 @@ class NotesViewModel(settings: SettingsRepository) : ViewModel() {
         _saveState.value = UiState.Loading
         viewModelScope.launch {
             when (val r = repo.updateNote(id, date, time, title, content)) {
-                is Result.Success -> {
-                    _saveState.value = if (r.data.ok && r.data.note != null)
-                        UiState.Success(r.data.note)
-                    else
-                        UiState.Error("Failed to update note")
-                    load()
-                }
-                is Result.Error -> _saveState.value = UiState.Error(r.message)
+                is Result.Success -> { _saveState.value = if (r.data.ok && r.data.note != null) UiState.Success(r.data.note) else UiState.Error("Failed"); load() }
+                is Result.Error   -> _saveState.value = UiState.Error(r.message)
             }
         }
     }
 
-    fun deleteNote(id: String) {
-        viewModelScope.launch {
-            repo.deleteNote(id)
-            load()
-        }
-    }
-
+    fun deleteNote(id: String) { viewModelScope.launch { repo.deleteNote(id); load() } }
     fun resetSaveState() { _saveState.value = UiState.Idle }
 }
 

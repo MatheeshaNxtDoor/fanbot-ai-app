@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import me.matheesha.fanbotai.R
 import me.matheesha.fanbotai.data.local.SettingsRepository
 import me.matheesha.fanbotai.data.model.Note
@@ -21,7 +20,6 @@ import me.matheesha.fanbotai.ui.UiState
 import java.time.LocalDate
 
 class NotesFragment : Fragment() {
-
     private var _binding: FragmentNotesBinding? = null
     private val binding get() = _binding!!
 
@@ -43,43 +41,27 @@ class NotesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        adapter = NotesAdapter(
-            onEdit   = { showNoteDialog(it) },
-            onDelete = { note ->
-                MaterialAlertDialogBuilder(requireContext())
-                    .setTitle("Delete note")
-                    .setMessage("Delete \"${note.title.ifEmpty { "this note" }}\"?")
-                    .setPositiveButton("Delete") { _, _ -> viewModel.deleteNote(note.id) }
-                    .setNegativeButton("Cancel", null)
-                    .show()
-            }
-        )
+        adapter = NotesAdapter(onEdit = { showNoteDialog(it) }, onDelete = { note ->
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Delete note").setMessage("Delete \"${note.title.ifEmpty { "this note" }}\"?")
+                .setPositiveButton("Delete") { _, _ -> viewModel.deleteNote(note.id) }
+                .setNegativeButton("Cancel", null).show()
+        })
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
-
         binding.fab.setOnClickListener { showNoteDialog(null) }
         binding.swipeRefresh.setOnRefreshListener { viewModel.load() }
-
         viewModel.notes.observe(viewLifecycleOwner) { state ->
             binding.swipeRefresh.isRefreshing = state is UiState.Loading
             when (state) {
-                is UiState.Success -> {
-                    adapter.submitList(state.data)
-                    binding.tvEmpty.visibility = if (state.data.isEmpty()) View.VISIBLE else View.GONE
-                }
-                is UiState.Error -> Snackbar.make(view, state.message, Snackbar.LENGTH_LONG).show()
+                is UiState.Success -> { adapter.submitList(state.data); binding.tvEmpty.visibility = if (state.data.isEmpty()) View.VISIBLE else View.GONE }
+                is UiState.Error   -> Snackbar.make(view, state.message, Snackbar.LENGTH_LONG).show()
                 else -> {}
             }
         }
-
         viewModel.saveState.observe(viewLifecycleOwner) { state ->
-            if (state is UiState.Error) {
-                Snackbar.make(view, state.message, Snackbar.LENGTH_LONG).show()
-                viewModel.resetSaveState()
-            }
+            if (state is UiState.Error) { Snackbar.make(view, state.message, Snackbar.LENGTH_LONG).show(); viewModel.resetSaveState() }
         }
-
         viewModel.load()
     }
 
@@ -88,39 +70,24 @@ class NotesFragment : Fragment() {
         val etTitle   = dialogView.findViewById<TextInputEditText>(R.id.etNoteTitle)
         val etContent = dialogView.findViewById<TextInputEditText>(R.id.etNoteContent)
         val etDate    = dialogView.findViewById<TextInputEditText>(R.id.etNoteDate)
-
-        existing?.let {
-            etTitle.setText(it.title)
-            etContent.setText(it.content)
-            etDate.setText(it.date)
-        } ?: run {
+        if (existing != null) {
+            etTitle.setText(existing.title); etContent.setText(existing.content); etDate.setText(existing.date)
+        } else {
             etDate.setText(LocalDate.now().toString())
         }
-
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle(if (existing == null) "New Note" else "Edit Note")
-            .setView(dialogView)
+            .setTitle(if (existing == null) "New Note" else "Edit Note").setView(dialogView)
             .setPositiveButton("Save") { _, _ ->
                 val date    = etDate.text.toString().trim()
                 val title   = etTitle.text.toString().trim()
                 val content = etContent.text.toString().trim()
-                if (content.isEmpty()) {
-                    Snackbar.make(binding.root, "Content is required", Snackbar.LENGTH_SHORT).show()
-                    return@setPositiveButton
-                }
-                if (existing == null) {
-                    viewModel.createNote(date, "", title, content)
-                } else {
-                    viewModel.updateNote(existing.id, date, existing.time, title, content)
-                }
+                if (content.isEmpty()) { Snackbar.make(binding.root, "Content required", Snackbar.LENGTH_SHORT).show(); return@setPositiveButton }
+                if (existing == null) viewModel.createNote(date, "", title, content)
+                else viewModel.updateNote(existing.id, date, existing.time, title, content)
             }
-            .setNegativeButton("Cancel", null)
-            .show()
+            .setNegativeButton("Cancel", null).show()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+    override fun onDestroyView() { super.onDestroyView(); _binding = null }
 }
 

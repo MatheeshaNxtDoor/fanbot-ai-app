@@ -16,17 +16,13 @@ class ConversationsAdapter(
 
     inner class ViewHolder(private val b: ItemConversationBinding) : RecyclerView.ViewHolder(b.root) {
         fun bind(item: Conversation) {
-            b.tvName.text        = item.name.ifEmpty { "User ${item.userId}" }
-            b.tvUsername.text    = if (item.username.isNotEmpty()) "@${item.username}" else ""
-            b.tvLastMessage.text = item.lastMessage.ifEmpty { "No messages" }
+            b.tvName.text         = item.name.ifEmpty { "User ${item.userId}" }
+            b.tvUsername.text     = if (item.username.isNotEmpty()) "@${item.username}" else ""
+            b.tvLastMessage.text  = item.lastMessage.ifEmpty { "No messages" }
             b.tvMessageCount.text = "${item.messageCount} msgs · ${item.replyCount} replies"
-            b.tvLastActive.text  = item.lastActive.take(16)
-
-            val muteColor = if (item.muted)
-                ContextCompat.getColor(b.root.context, R.color.status_offline)
-            else
-                ContextCompat.getColor(b.root.context, R.color.status_online)
-
+            b.tvLastActive.text   = item.lastActive.take(16)
+            val muteColor = if (item.muted) ContextCompat.getColor(b.root.context, R.color.status_offline)
+                            else ContextCompat.getColor(b.root.context, R.color.status_online)
             b.btnMute.text = if (item.muted) "Unmute" else "Mute"
             b.btnMute.setTextColor(muteColor)
             b.btnMute.setOnClickListener { onMuteToggle(item) }
@@ -36,13 +32,12 @@ class ConversationsAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
         ItemConversationBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     )
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(getItem(position))
 
     companion object {
         val DIFF = object : DiffUtil.ItemCallback<Conversation>() {
-            override fun areItemsTheSame(a: Conversation, b: Conversation) = a.userId == b.userId
-            override fun areContentsTheSame(a: Conversation, b: Conversation) = a == b
+            override fun areItemsTheSame(oldItem: Conversation, newItem: Conversation) = oldItem.userId == newItem.userId
+            override fun areContentsTheSame(oldItem: Conversation, newItem: Conversation) = oldItem == newItem
         }
     }
 }
