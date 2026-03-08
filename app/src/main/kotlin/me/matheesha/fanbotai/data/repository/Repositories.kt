@@ -12,12 +12,11 @@ sealed class Result<out T> {
 suspend fun <T> safeApiCall(call: suspend () -> retrofit2.Response<T>): Result<T> {
     return try {
         val response = call()
-        if (response.isSuccessful) {
-            val body = response.body()
-            if (body != null) Result.Success(body)
-            else Result.Error("Empty response body", response.code())
+        val body = response.body()
+        if (body != null) {
+            Result.Success(body)
         } else {
-            Result.Error(response.message().ifEmpty { "Server error" }, response.code())
+            Result.Error(response.message().ifEmpty { "Server error ${response.code()}" }, response.code())
         }
     } catch (e: Exception) {
         Result.Error(e.localizedMessage ?: "Unknown error")

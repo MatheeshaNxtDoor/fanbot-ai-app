@@ -6,11 +6,11 @@ import com.google.gson.annotations.SerializedName
 
 data class LoginRequest(val username: String, val password: String, val totp: String? = null)
 
-data class LoginUser(val username: String, val role: String)
+data class LoginUser(val id: String = "", val username: String, val role: String, val permissions: List<String> = emptyList())
 data class LoginResponse(
     val ok: Boolean? = null,
     val error: String? = null,
-    val needsTotp: Boolean? = null,
+    @SerializedName("needs_totp") val needsTotp: Boolean? = null,
     val user: LoginUser? = null
 )
 
