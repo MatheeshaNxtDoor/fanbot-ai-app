@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="me.matheesha.fanbotai.ui.login.LoginFragment"
+        android:label="Login">
+        <action
+            android:id="@+id/action_loginFragment_to_dashboardFragment"
+            app:destination="@id/dashboardFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dashboardFragment"
+        android:name="me.matheesha.fanbotai.ui.dashboard.DashboardFragment"
+        android:label="Dashboard">
+        <action
+            android:id="@+id/action_dashboardFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_usersFragment"
+            app:destination="@id/usersFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/conversationsFragment"
+        android:name="me.matheesha.fanbotai.ui.conversations.ConversationsFragment"
+        android:label="Conversations" />
+
+    <fragment
+        android:id="@+id/analyticsFragment"
+        android:name="me.matheesha.fanbotai.ui.analytics.AnalyticsFragment"
+        android:label="Analytics" />
+
+    <fragment
+        android:id="@+id/notesFragment"
+        android:name="me.matheesha.fanbotai.ui.notes.NotesFragment"
+        android:label="Notes" />
+
+    <fragment
+        android:id="@+id/scheduleFragment"
+        android:name="me.matheesha.fanbotai.ui.schedule.ScheduleFragment"
+        android:label="Schedule" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="me.matheesha.fanbotai.ui.settings.SettingsFragment"
+        android:label="Settings">
+        <action
+            android:id="@+id/action_settingsFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/usersFragment"
+        android:name="me.matheesha.fanbotai.ui.users.UsersFragment"
+        android:label="Users" />
+
+</navigation>
+

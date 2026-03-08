@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/surface"
+            app:title="Dashboard"
+            app:titleTextColor="@color/text_primary"
+            app:menu="@menu/dashboard_menu" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Status card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardBackgroundColor="@color/surface"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="8dp">
+
+                            <TextView
+                                android:id="@+id/tvBotStatus"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:text="● Checking..."
+                                android:textColor="@color/text_muted" />
+
+                            <TextView
+                                android:id="@+id/tvForceInactive"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Force Inactive"
+                                android:textColor="@color/status_offline"
+                                android:textSize="12sp"
+                                android:background="@drawable/bg_chip_error"
+                                android:paddingHorizontal="8dp"
+                                android:paddingVertical="4dp"
+                                android:visibility="gone" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvWindowState"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_muted"
+                            android:textSize="14sp"
+                            android:layout_marginBottom="4dp" />
+
+                        <TextView
+                            android:id="@+id/tvWindowNext"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/accent"
+                            android:textSize="13sp"
+                            android:layout_marginBottom="16dp" />
+
+                        <TextView
+                            android:id="@+id/tvTimezone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_muted"
+                            android:textSize="12sp"
+                            android:layout_marginBottom="16dp" />
+
+                        <!-- Control buttons -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="3">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnStart"
+                                android:layout_width="0dp"
+                                android:layout_height="48dp"
+                                android:layout_weight="1"
+                                android:layout_marginEnd="4dp"
+                                android:text="Start"
+                                style="@style/Widget.Material3.Button.OutlinedButton"
+                                android:textColor="@color/status_online" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnStop"
+                                android:layout_width="0dp"
+                                android:layout_height="48dp"
+                                android:layout_weight="1"
+                                android:layout_marginHorizontal="4dp"
+                                android:text="Stop"
+                                style="@style/Widget.Material3.Button.OutlinedButton"
+                                android:textColor="@color/status_offline" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnRestart"
+                                android:layout_width="0dp"
+                                android:layout_height="48dp"
+                                android:layout_weight="1"
+                                android:layout_marginStart="4dp"
+                                android:text="Restart"
+                                style="@style/Widget.Material3.Button.OutlinedButton"
+                                android:textColor="@color/accent" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Stats grid -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="4dp"
+                            app:cardBackgroundColor="@color/surface"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="0dp">
+                            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Messages" android:textColor="@color/text_muted" android:textSize="11sp" />
+                                <TextView android:id="@+id/statMessages" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textColor="@color/text_primary" android:textSize="22sp" android:textStyle="bold" />
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="4dp"
+                            app:cardBackgroundColor="@color/surface"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="0dp">
+                            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Replies" android:textColor="@color/text_muted" android:textSize="11sp" />
+                                <TextView android:id="@+id/statReplies" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textColor="@color/text_primary" android:textSize="22sp" android:textStyle="bold" />
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="4dp"
+                            app:cardBackgroundColor="@color/surface"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="0dp">
+                            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Users" android:textColor="@color/text_muted" android:textSize="11sp" />
+                                <TextView android:id="@+id/statUsers" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textColor="@color/text_primary" android:textSize="22sp" android:textStyle="bold" />
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="4dp"
+                            app:cardBackgroundColor="@color/surface"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="0dp">
+                            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Today" android:textColor="@color/text_muted" android:textSize="11sp" />
+                                <TextView android:id="@+id/statToday" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textColor="@color/text_primary" android:textSize="22sp" android:textStyle="bold" />
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+

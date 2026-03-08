@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Background -->
+    <color name="background">#0D0F18</color>
+    <color name="surface">#13152B</color>
+    <color name="surface2">#1A1D30</color>
+
+    <!-- Text -->
+    <color name="text_primary">#F0F2F8</color>
+    <color name="text_secondary">#C8CEDE</color>
+    <color name="text_muted">#5A6480</color>
+
+    <!-- Accent / Brand -->
+    <color name="accent">#A855F7</color>
+    <color name="accent2">#EC4899</color>
+
+    <!-- Status -->
+    <color name="status_online">#34D399</color>
+    <color name="status_offline">#F87171</color>
+    <color name="status_warn">#FBBF24</color>
+
+    <!-- System UI -->
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>
+

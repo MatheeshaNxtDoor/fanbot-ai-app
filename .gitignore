@@ -1,0 +1,26 @@
+# Android
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+*.apk
+*.aab
+
+# Google Services — committed intentionally
+# app/google-services.json
+
+# Android SDK
+/android-sdk/
+
+# Gradle
+.gradle/
+build/
+
+# Kotlin
+*.class
+

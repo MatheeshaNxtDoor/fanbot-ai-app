@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/dashboardFragment"
+        android:icon="@drawable/ic_dashboard"
+        android:title="Dashboard" />
+    <item
+        android:id="@+id/conversationsFragment"
+        android:icon="@drawable/ic_chat"
+        android:title="Chats" />
+    <item
+        android:id="@+id/analyticsFragment"
+        android:icon="@drawable/ic_analytics"
+        android:title="Analytics" />
+    <item
+        android:id="@+id/notesFragment"
+        android:icon="@drawable/ic_notes"
+        android:title="Notes" />
+    <item
+        android:id="@+id/scheduleFragment"
+        android:icon="@drawable/ic_schedule"
+        android:title="Schedule" />
+</menu>
+
